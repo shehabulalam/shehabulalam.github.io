@@ -1,0 +1,401 @@
+/* ============================================================
+   Shehabul Alam — Portfolio
+   Neumorphic (soft-UI) design system.
+
+   Light is the default theme. Dark is a navy variant of the SAME
+   language — matte surfaces, dual-shadow extrusion, generous radii.
+
+   Theme is switched by `data-theme` on <html>; every colour and
+   shadow below is a custom property, so no component CSS is
+   duplicated per theme.
+
+   Layout/spacing/typography come from Tailwind utilities in the
+   markup. This file owns colour, elevation and motion only.
+   ============================================================ */
+
+/* ── TOKENS : LIGHT (default) ─────────────────────────────── */
+:root {
+  --bg:            #E4E7EE;
+  --bg-sunken:     #DDE1EA;
+  --text:          #272E42;
+  --text-muted:    #454E66;
+  --text-faint:    #5E6780;
+
+  --accent: #3f41bf;
+  --accent-strong: #29267c;  /* AA-safe accent for small text on light */
+  --accent-soft:   rgba(99, 102, 241, 0.12);
+  /* Solid-fill pair. Kept separate from --accent because the fill must
+     stay dark enough for white text to clear 4.5:1 in BOTH themes. */
+  --accent-fill: #303291;
+  --accent-fill-text: #FFFFFF;
+  --success:          #146C32;
+  --coral:         #C32A38;
+
+  /* Neumorphic extrusion: one light source, top-left. */
+  --sh-dark:       #C2C7D6;
+  --sh-light:      #FFFFFF;
+
+  --ring:          rgba(99, 102, 241, 0.55);
+  --hairline:      rgba(43, 50, 70, 0.07);
+
+  --font:          'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --mono:          'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ── TOKENS : DARK (navy, matte) ──────────────────────────── */
+[data-theme='dark'] {
+  --bg:            #1A2133;
+  --bg-sunken:     #161C2B;
+  --text:          #E9EDF8;
+  --text-muted:    #A3AECA;
+  --text-faint:    #808AA6;
+
+  --accent:        #818CF8;
+  --accent-strong: #A5ADFB;
+  --accent-soft:   rgba(129, 140, 248, 0.14);
+  /* On dark, the accent is light — so the fill takes DARK text, not white
+     (white on #818CF8 is only 2.98:1). */
+  --accent-fill:      #818CF8;
+  --accent-fill-text: #141A28;
+  --success:          #4ADE80;
+  --coral:         #F3737D;
+
+  /* Same light source, but the "light" side lifts rather than whitens
+     — that is what keeps the dark theme matte instead of glossy. */
+  --sh-dark:       #111623;
+  --sh-light:      #232C44;
+
+  --ring:          rgba(129, 140, 248, 0.6);
+  --hairline:      rgba(233, 237, 248, 0.08);
+}
+
+/* ── ELEVATION PRIMITIVES ─────────────────────────────────── */
+/* Neumorphism requires the surface and the page to share a colour;
+   depth comes entirely from the shadow pair, never from a fill. */
+:root {
+  --neu-raised:    9px 9px 18px var(--sh-dark), -9px -9px 18px var(--sh-light);
+  --neu-raised-sm: 5px 5px 11px var(--sh-dark), -5px -5px 11px var(--sh-light);
+  --neu-raised-lg: 14px 14px 28px var(--sh-dark), -14px -14px 28px var(--sh-light);
+  --neu-inset:     inset 5px 5px 11px var(--sh-dark), inset -5px -5px 11px var(--sh-light);
+  --neu-inset-sm:  inset 3px 3px 6px var(--sh-dark), inset -3px -3px 6px var(--sh-light);
+  --neu-flat:      2px 2px 6px var(--sh-dark), -2px -2px 6px var(--sh-light);
+}
+
+/* ── BASE ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem; /* clears the fixed nav on anchor jumps */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .35s ease, color .35s ease;
+}
+
+::selection { background: var(--accent-fill); color: var(--accent-fill-text); }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.mono { font-family: var(--mono); }
+.text-muted-c { color: var(--text-muted); }
+.text-faint-c { color: var(--text-faint); }
+.accent-c     { color: var(--accent-strong); }
+
+/* ── SURFACES ─────────────────────────────────────────────── */
+.neu {
+  background: var(--bg);
+  border-radius: 22px;
+  box-shadow: var(--neu-raised);
+  transition: box-shadow .3s ease, transform .3s ease, background-color .35s ease;
+}
+.neu-sm { border-radius: 16px; box-shadow: var(--neu-raised-sm); }
+.neu-lg { border-radius: 28px; box-shadow: var(--neu-raised-lg); }
+
+.neu-inset {
+  background: var(--bg);
+  border-radius: 18px;
+  box-shadow: var(--neu-inset);
+  transition: box-shadow .3s ease, background-color .35s ease;
+}
+
+/* Lift on hover; press in on click. */
+.neu-hover:hover {
+  box-shadow: var(--neu-raised-lg);
+  transform: translateY(-3px);
+}
+.neu-hover:active {
+  box-shadow: var(--neu-inset);
+  transform: translateY(0);
+}
+
+/* ── BUTTONS ──────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .85rem 1.75rem;
+  border: 0;
+  border-radius: 100px;
+  background: var(--bg);
+  box-shadow: var(--neu-raised-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: .92rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: box-shadow .25s ease, transform .25s ease, color .25s ease;
+}
+.btn:hover { box-shadow: var(--neu-raised); transform: translateY(-2px); color: var(--accent-strong); }
+.btn:active { box-shadow: var(--neu-inset-sm); transform: translateY(0); }
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: var(--neu-inset-sm); }
+
+/* The one solid-fill element on the page — keeps a single clear CTA. */
+.btn-accent {
+  background: var(--accent-fill);
+  color: var(--accent-fill-text);
+  box-shadow: 6px 6px 14px var(--sh-dark), -6px -6px 14px var(--sh-light);
+}
+.btn-accent:hover {
+  background: var(--accent-fill);
+  color: var(--accent-fill-text);
+  filter: brightness(1.07);
+}
+
+/* ── PILLS ────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem 1.1rem;
+  border: 0;
+  border-radius: 100px;
+  background: var(--bg);
+  box-shadow: var(--neu-raised-sm);
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+  transition: box-shadow .25s ease, color .25s ease, transform .25s ease;
+}
+.pill-btn { cursor: pointer; }
+.pill-btn:hover { color: var(--text); transform: translateY(-2px); }
+
+/* Pressed-in state = currently selected, mirroring the reference's
+   active city chip. */
+.pill-btn[aria-pressed='true'],
+.pill.is-active {
+  box-shadow: var(--neu-inset-sm);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+/* ── NAV ──────────────────────────────────────────────────── */
+.site-nav {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: min(1180px, calc(100% - 2rem));
+  padding: .7rem .85rem .7rem 1.5rem;
+  border-radius: 100px;
+  background: var(--bg);
+  box-shadow: var(--neu-raised-sm);
+  transition: box-shadow .3s ease, background-color .35s ease;
+}
+.site-nav.is-scrolled { box-shadow: var(--neu-raised); }
+
+.nav-link {
+  padding: .5rem .95rem;
+  border-radius: 100px;
+  color: var(--text-muted);
+  font-size: .88rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color .25s ease, box-shadow .25s ease;
+}
+.nav-link:hover { color: var(--text); }
+.nav-link.is-current {
+  color: var(--accent-strong);
+  font-weight: 600;
+  box-shadow: var(--neu-inset-sm);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--neu-raised-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: box-shadow .25s ease, color .25s ease, transform .25s ease;
+}
+.icon-btn:hover { color: var(--accent-strong); transform: translateY(-2px); }
+.icon-btn:active { box-shadow: var(--neu-inset-sm); transform: translateY(0); }
+.icon-btn svg { width: 19px; height: 19px; }
+
+/* Theme toggle swaps which glyph is visible. */
+.icon-sun  { display: none; }
+[data-theme='dark'] .icon-sun  { display: block; }
+[data-theme='dark'] .icon-moon { display: none; }
+
+/* Mobile drawer */
+.nav-drawer {
+  display: none;
+  margin-top: .85rem;
+  padding: .75rem;
+  border-radius: 22px;
+  background: var(--bg);
+  box-shadow: var(--neu-raised);
+}
+.nav-drawer.is-open { display: block; }
+.nav-drawer a {
+  display: block;
+  padding: .75rem 1rem;
+  border-radius: 14px;
+  color: var(--text-muted);
+  font-size: .95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.nav-drawer a:hover { color: var(--accent-strong); box-shadow: var(--neu-inset-sm); }
+
+/* ── TYPE ─────────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.display {
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.02;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: 1.12;
+}
+
+/* The oversized "18°C" figure from the reference, reused for stats. */
+.figure {
+  font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1;
+  color: var(--text);
+}
+
+/* ── FORM ─────────────────────────────────────────────────── */
+.field {
+  width: 100%;
+  padding: .85rem 1.25rem;
+  border: 0;
+  border-radius: 100px;
+  background: var(--bg);
+  box-shadow: var(--neu-inset);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: .92rem;
+  outline: none;
+  transition: box-shadow .25s ease, background-color .35s ease;
+}
+.field::placeholder { color: var(--text-faint); }
+.field:focus { box-shadow: var(--neu-inset), 0 0 0 2px var(--ring); }
+textarea.field { min-height: 140px; border-radius: 22px; resize: vertical; }
+
+.field-error {
+  display: none;
+  margin-top: .4rem;
+  padding-left: 1.25rem;
+  color: var(--coral);
+  font-size: .78rem;
+}
+.field-error.is-shown { display: block; }
+
+/* Spam honeypot — hidden from people, reachable by bots. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-status { font-size: .86rem; line-height: 1.6; }
+.form-status.is-ok   { color: var(--success); }
+.form-status.is-err  { color: var(--coral); }
+
+/* ── MARQUEE (hourly-strip analogue) ──────────────────────── */
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee-track { display: flex; gap: .75rem; width: max-content; animation: slide 38s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ── TIMELINE ─────────────────────────────────────────────── */
+.tl-dot {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--neu-inset-sm);
+}
+.tl-dot.is-current { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+
+/* ── REVEAL ───────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ── MOTION PREFERENCE ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .marquee-track { animation: none; }
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 880px) {
+  .site-nav { border-radius: 26px; padding: .7rem .75rem .7rem 1.25rem; }
+  .neu     { border-radius: 20px; }
+  .neu-lg  { border-radius: 24px; }
+}

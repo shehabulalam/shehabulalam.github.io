@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page not found — Shehabul Alam</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="font-sans">
+  <main class="min-h-screen flex items-center justify-center px-5">
+    <div class="neu neu-lg p-10 sm:p-14 text-center max-w-md">
+      <p class="eyebrow mb-4">Error 404</p>
+      <p class="display mb-5">404</p>
+      <h1 class="section-title mb-4">Page not found</h1>
+      <p class="text-muted-c mb-9">
+        That page doesn't exist — it may have been moved or renamed.
+      </p>
+      <a href="/" class="btn btn-accent">Back to home</a>
+    </div>
+  </main>
+</body>
+</html>
