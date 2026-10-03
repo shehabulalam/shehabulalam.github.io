@@ -93,7 +93,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font), sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -110,7 +110,8 @@ a { color: inherit; }
   border-radius: 6px;
 }
 
-.mono { font-family: var(--mono); }
+.mono {
+  font-family: var(--mono), monospace; }
 .text-muted-c { color: var(--text-muted); }
 .text-faint-c { color: var(--text-faint); }
 .accent-c     { color: var(--accent-strong); }
@@ -153,7 +154,7 @@ a { color: inherit; }
   background: var(--bg);
   box-shadow: var(--neu-raised-sm);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font), sans-serif;
   font-size: .92rem;
   font-weight: 600;
   text-decoration: none;
@@ -187,7 +188,7 @@ a { color: inherit; }
   background: var(--bg);
   box-shadow: var(--neu-raised-sm);
   color: var(--text-muted);
-  font-family: var(--mono);
+  font-family: var(--mono), monospace;
   font-size: .78rem;
   font-weight: 500;
   white-space: nowrap;
@@ -285,7 +286,7 @@ a { color: inherit; }
 
 /* ── TYPE ─────────────────────────────────────────────────── */
 .eyebrow {
-  font-family: var(--mono);
+  font-family: var(--mono), monospace;
   font-size: .72rem;
   font-weight: 600;
   letter-spacing: .18em;
@@ -325,7 +326,7 @@ a { color: inherit; }
   background: var(--bg);
   box-shadow: var(--neu-inset);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font), sans-serif;
   font-size: .92rem;
   outline: none;
   transition: box-shadow .25s ease, background-color .35s ease;
