@@ -374,6 +374,100 @@ textarea.field { min-height: 140px; border-radius: 22px; resize: vertical; }
 }
 .tl-dot.is-current { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 
+/* ── PROJECT FLIP CARD ────────────────────────────────────── */
+/* Flex rather than height:100% — a grid item stretches to its row, so flex:1
+   gives .proj-flip a definite height without relying on a percentage
+   resolving against the grid area. */
+.proj-card { perspective: 1400px; display: flex; }
+
+.proj-flip {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  transform-style: preserve-3d;
+  transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+}
+/* Vertical flip — the card turns bottom-over-top. */
+.proj-card.is-flipped .proj-flip { transform: rotateX(180deg); }
+
+.proj-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 22px;
+  /* Deliberately NOT transitioning transform: that would fight the flip. */
+  transition: background-color .35s ease, box-shadow .3s ease;
+}
+
+/* The front stays in normal flow so it defines the card's height; only the
+   back is taken out of flow and stretched over the same box. Absolutely
+   positioning both would collapse the card to zero height. */
+.proj-front {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 320px;   /* guarantees the screenshot has room on short cards */
+}
+
+/* NB: no overflow clip on .proj-flip — a clipping overflow on the
+   preserve-3d element flattens the 3D context and kills the flip. */
+.proj-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateX(180deg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.proj-back img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* Sits at the TOP of the back face, mirroring the front card's header: pill on
+   the left, icon button on the right, same padding. `margin-bottom: auto`
+   pins it up while .proj-back stays a flex column. */
+.proj-back-bar {
+  position: relative;
+  margin-bottom: auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: 1.1rem;
+  background: linear-gradient(to bottom, rgba(8, 11, 20, .88), rgba(8, 11, 20, .5) 55%, transparent);
+}
+
+/* Over a screenshot the neumorphic treatment reads as noise, so controls on
+   the back face switch to a glass style with fixed light-on-dark contrast. */
+.proj-back-bar .icon-btn,
+.proj-back-bar .pill {
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, .18);
+  color: #fff;
+}
+.proj-back-bar .icon-btn:hover,
+.proj-back-bar .pill-btn:hover {
+  background: rgba(255, 255, 255, .32);
+  color: #fff;
+}
+.proj-back-bar .pill:disabled {
+  background: rgba(255, 255, 255, .1);
+  color: rgba(255, 255, 255, .75);
+  cursor: not-allowed;
+  opacity: 1;              /* readable on the image rather than ghosted out */
+}
+
+.proj-card:not(.is-flipped):hover .proj-front { box-shadow: var(--neu-raised-lg); }
+
 /* ── REVEAL ───────────────────────────────────────────────── */
 .reveal {
   opacity: 0;

@@ -120,10 +120,67 @@
     });
   }
 
-  /* ── Project filter ─────────────────────────────────────── */
+  /* ── Project cards: flip + filter ───────────────────────── */
+  var grid = document.getElementById('projectGrid');
   var filterBar = document.getElementById('projectFilters');
   var projectCards = document.querySelectorAll('#projectGrid [data-tech]');
   var emptyMsg = document.getElementById('noProjects');
+
+  // `backface-visibility` hides a face visually but leaves its links focusable,
+  // so without `inert` a keyboard user tabs into an invisible "Visit site"
+  // button. Markup ships with the back face already inert.
+  function setFlipped(card, flipped) {
+    if (!card) return;
+    card.classList.toggle('is-flipped', flipped);
+
+    var front = card.querySelector('.proj-front');
+    var back = card.querySelector('.proj-back');
+    if (front) front.toggleAttribute('inert', flipped);
+    if (back) back.toggleAttribute('inert', !flipped);
+
+    Array.prototype.forEach.call(card.querySelectorAll('[data-flip][aria-expanded]'), function (btn) {
+      btn.setAttribute('aria-expanded', String(flipped));
+    });
+
+    // Screenshots are ~3000px wide; loading all 13 on scroll would cost well
+    // over a megabyte for visitors who never flip a card. Fetch on first flip
+    // only — the 600ms rotation covers it.
+    if (flipped && back) {
+      var img = back.querySelector('img[data-src]');
+      if (img) {
+        img.src = img.getAttribute('data-src');
+        img.removeAttribute('data-src');
+      }
+    }
+  }
+
+  if (grid) {
+    grid.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-flip]');
+      if (!btn) return;
+      var card = btn.closest('.proj-card');
+      if (!card) return;
+
+      var willFlip = !card.classList.contains('is-flipped');
+      setFlipped(card, willFlip);
+
+      // Flipping back leaves focus on a button that is about to go inert, so
+      // hand it to the trigger on the face now facing the viewer.
+      if (!willFlip) {
+        var frontBtn = card.querySelector('.proj-front [data-flip]');
+        if (frontBtn) frontBtn.focus();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      var open = grid.querySelector('.proj-card.is-flipped');
+      if (!open) return;
+      setFlipped(open, false);
+      var frontBtn = open.querySelector('.proj-front [data-flip]');
+      if (frontBtn) frontBtn.focus();
+    });
+  }
 
   if (filterBar && projectCards.length) {
     filterBar.addEventListener('click', function (e) {
@@ -139,10 +196,11 @@
       Array.prototype.forEach.call(projectCards, function (card) {
         var tech = (card.getAttribute('data-tech') || '').split(/\s+/);
         var match = filter === 'all' || tech.indexOf(filter) !== -1;
-        // Inline style, not the `hidden` attribute: these cards carry Tailwind's
-        // `.flex`, and an author-stylesheet class beats the UA `[hidden]` rule,
-        // so setting .hidden would leave the card visible.
+        // Inline style, not the `hidden` attribute: an author-stylesheet
+        // display rule beats the UA `[hidden]` rule, so .hidden wouldn't stick.
         card.style.display = match ? '' : 'none';
+        // A card left mid-flip would reappear showing its back face.
+        setFlipped(card, false);
         if (match) shown++;
       });
 
